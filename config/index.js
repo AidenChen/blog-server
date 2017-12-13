@@ -8,6 +8,8 @@ module.exports = {
     baseUri: '/api'
   },
   mongodb: {
-    url: process.env.MONGODB_URL
+    url: process.env.MONGODB_URL,
+    user: process.env.MONGODB_USER,
+    pass: process.env.MONGODB_PASS
   }
 }
