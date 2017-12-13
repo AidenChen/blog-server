@@ -29,7 +29,6 @@ exports.create = async function (ctx) {
     is_published,
     tags
   })
-
   let createdArticle = await article.save().catch(err => {
     ctx.throw(500, '服务器内部错误')
   })
