@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/AidenChen/blog-server#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^4.0.0",
+    "jsonwebtoken": "^8.1.0",
     "koa": "^2.4.1",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.3.0",

@@ -2,6 +2,7 @@
 
 let mongoose = require('mongoose')
 const Config = require('./config')
+const User = require('./app/Models/User')
 const Article = require('./app/Models/Article')
 const Tag = require('./app/Models/Tag')
 const Koa = require('koa')
