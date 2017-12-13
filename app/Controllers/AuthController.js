@@ -32,13 +32,13 @@ exports.login = async function (ctx) {
   const password = ctx.request.body.password
 
   const user = await User.findOne({ username, }).exec().catch(err => {
-    console.log(err)
+    ctx.throw(500, '服务器内部错误')
   })
   if (!user) {
-    ctx.throw(401, '用户名错误')
+    ctx.throw(401, '用户不存在')
   }
   if (!bcrypt.compareSync(password, user.password)) {
-    ctx.throw(401, '密码错误')
+    ctx.throw(401, '密码不正确')
   }
   
   const token = jwt.sign({
@@ -49,7 +49,9 @@ exports.login = async function (ctx) {
 
   ctx.set('Authorization', `Bearer ${token}`)
   ctx.body = {
-    id: user._id,
-    nick: user.nick
+    data: {
+      _id: user._id,
+      nick: user.nick
+    }
   }
 }

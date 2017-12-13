@@ -19,7 +19,7 @@ const Tag = require('./app/Models/Tag')
 const router = require('./routes')()
 
 const app = new Koa()
-onerror(app)
+// onerror(app)
 app
   .use(bodyParser())
   .use(router.routes())

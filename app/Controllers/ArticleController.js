@@ -9,8 +9,6 @@ exports.create = async function (ctx) {
   const abstract = ctx.request.body.abstract
   const is_published = ctx.request.body.is_published
   const tags = ctx.request.body.tags
-  const created_at = new Date()
-  const updated_at = new Date()
 
   if (!title) {
     ctx.throw(400, '标题不能为空')
@@ -27,9 +25,7 @@ exports.create = async function (ctx) {
     content,
     abstract,
     is_published,
-    tags,
-    created_at,
-    updated_at
+    tags
   })
 
   let createdArticle = await article.save().catch(err => {
@@ -40,7 +36,6 @@ exports.create = async function (ctx) {
   })
 
   ctx.body = {
-    success: true,
-    article: createdArticle
+    data: createdArticle
   }
 }
