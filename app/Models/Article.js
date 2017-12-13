@@ -17,20 +17,19 @@ const ArticleSchema = new Schema({
     type: Boolean,
     default: false
   },
-  created_at: {
-    type: Date
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
-  },
+  created_at: String,
+  updated_at: String
 }, { versionKey: false })
 
-ArticleSchema.path('created_at').get(function (v) {
-  return moment(v).format('YYYY-MM-DD HH:mm:ss')
-})
-ArticleSchema.path('updated_at').get(function (v) {
-  return moment(v).format('YYYY-MM-DD HH:mm:ss')
+ArticleSchema.pre('save', function (next) {
+  const time = moment().format('YYYY-MM-DD HH:mm:ss')
+  if (this.isNew) {
+    this.created_at = this.updated_at = time
+  } else {
+    this.updated_at = time
+  }
+
+  next()
 })
 
 module.exports = mongoose.model('Article', ArticleSchema)

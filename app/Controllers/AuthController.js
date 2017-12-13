@@ -20,8 +20,7 @@ exports.init = async function (ctx) {
     username: Config.admin.username,
     password: hash,
     nick: Config.admin.username,
-    avatar: '',
-    registered_at: new Date()
+    avatar: ''
   })
   await user.save().catch(err => {
     console.log(err)
@@ -48,9 +47,9 @@ exports.login = async function (ctx) {
     exp: Math.floor(Date.now() / 1000) + Config.jwt.ttl * 60
   }, Config.jwt.secret)
 
+  ctx.set('Authorization', `Bearer ${token}`)
   ctx.body = {
     id: user._id,
-    nick: user.nick,
-    token: `Bearer ${token}`
+    nick: user.nick
   }
 }

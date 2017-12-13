@@ -11,6 +11,7 @@ mongoose.connect(Config.mongodb.url, {
 mongoose.connection.on('error', global.console.error)
 
 const Koa = require('koa')
+const onerror = require('koa-onerror')
 const bodyParser = require('koa-bodyparser')
 const User = require('./app/Models/User')
 const Article = require('./app/Models/Article')
@@ -18,6 +19,7 @@ const Tag = require('./app/Models/Tag')
 const router = require('./routes')()
 
 const app = new Koa()
+onerror(app)
 app
   .use(bodyParser())
   .use(router.routes())
