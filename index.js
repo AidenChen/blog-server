@@ -1,14 +1,7 @@
 'use strict'
 
-let mongoose = require('mongoose')
 const Config = require('./config')
-const User = require('./app/Models/User')
-const Article = require('./app/Models/Article')
-const Tag = require('./app/Models/Tag')
-const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
-const router = require('./routes')()
-
+let mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 mongoose.connect(Config.mongodb.url, {
   useMongoClient: true,
@@ -16,6 +9,14 @@ mongoose.connect(Config.mongodb.url, {
   pass: Config.mongodb.pass
 })
 mongoose.connection.on('error', global.console.error)
+
+const Koa = require('koa')
+const bodyParser = require('koa-bodyparser')
+const User = require('./app/Models/User')
+const Article = require('./app/Models/Article')
+const Tag = require('./app/Models/Tag')
+const router = require('./routes')()
+
 const app = new Koa()
 app
   .use(bodyParser())
