@@ -24,10 +24,9 @@ const ArticleSchema = new Schema({
 ArticleSchema.pre('save', function (next) {
   const time = moment().format('YYYY-MM-DD HH:mm:ss')
   if (this.isNew) {
-    this.created_at = this.updated_at = time
-  } else {
-    this.updated_at = time
+    this.created_at = time
   }
+  this.updated_at = time
 
   next()
 })

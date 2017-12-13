@@ -15,6 +15,10 @@ module.exports = function () {
   AuthController.init()
   router.post('/login', AuthController.login)
   router.post('/articles', FormatResponse, VerifyToken, ArticleController.create)
+  router.del('/articles/:id', FormatResponse, VerifyToken, ArticleController.destroy)
+  router.put('/articles/:id', FormatResponse, VerifyToken, ArticleController.update)
+  router.get('/articles', FormatResponse, ArticleController.index)
+  router.get('/articles/:id', FormatResponse, ArticleController.show)
 
   return router
 }
