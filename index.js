@@ -11,7 +11,9 @@ mongoose.connect(Config.mongodb.url, {
 mongoose.connection.on('error', global.console.error)
 
 const Koa = require('koa')
+const convert = require('koa-convert')
 const onerror = require('koa-onerror')
+const cors = require('koa-cors')
 const bodyParser = require('koa-bodyparser')
 const User = require('./app/Models/User')
 const Article = require('./app/Models/Article')
@@ -21,6 +23,9 @@ const router = require('./routes')()
 const app = new Koa()
 // onerror(app)
 app
+  .use(convert(cors({
+    expose: ['Content-Type', 'Authorization']
+  })))
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())

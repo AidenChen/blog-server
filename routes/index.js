@@ -14,7 +14,7 @@ module.exports = function () {
   })
 
   AuthController.init()
-  router.post('/login', AuthController.login)
+  router.post('/login', FormatResponse, AuthController.login)
 
   router.post('/articles', FormatResponse, VerifyToken, ArticleController.create)
   router.del('/articles/:id', FormatResponse, VerifyToken, ArticleController.destroy)

@@ -50,7 +50,7 @@ exports.login = async function (ctx) {
   ctx.set('Authorization', `Bearer ${token}`)
   ctx.body = {
     data: {
-      _id: user._id,
+      id: user._id,
       nick: user.nick
     }
   }

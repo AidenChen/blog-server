@@ -14,7 +14,10 @@ exports.create = async function (ctx) {
     ctx.throw(500, '服务器内部错误')
   })
   if (tagExists) {
-    ctx.throw(400, '标签已存在')
+    ctx.body = {
+      data: tagExists
+    }
+    return
   }
 
   const tag = new Tag({
@@ -65,8 +68,15 @@ exports.update = async function (ctx) {
 }
 
 exports.index = async function (ctx) {
-  const tags = await Tag.find().catch(err => {
+  let tags = await Tag.find().catch(err => {
     ctx.throw(500, '服务器内部错误')
+  })
+
+  tags = tags.map((tag) => {
+    return {
+      id: tag.id,
+      name: tag.name
+    }
   })
 
   ctx.body = {

@@ -64,13 +64,13 @@ exports.update = async function (ctx) {
   const is_published = ctx.request.body.is_published
   const tags = ctx.request.body.tags
 
-  if (!title) {
+  if (title === '') {
     ctx.throw(400, '标题不能为空')
   }
-  if (!content) {
+  if (content === '') {
     ctx.throw(400, '内容不能为空')
   }
-  if (!abstract) {
+  if (abstract === '') {
     ctx.throw(400, '摘要不能为空')
   }
 
@@ -100,7 +100,7 @@ exports.index = async function (ctx) {
       .populate('tags')
       .sort({ '_id': -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(parseInt(limit))
       .catch(err => {
         ctx.throw(500, '服务器内部错误')
       })
@@ -115,7 +115,7 @@ exports.index = async function (ctx) {
       .populate('tags')
       .sort({ '_id': -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(parseInt(limit))
       .catch(err => {
         ctx.throw(500, '服务器内部错误')
       })
@@ -125,6 +125,19 @@ exports.index = async function (ctx) {
       ctx.throw(500, '服务器内部错误')
     })
   }
+
+  articles = articles.map((article) => {
+    return {
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      abstract: article.abstract,
+      tags: article.tags,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }
+  })
 
   ctx.body = {
     data: {
