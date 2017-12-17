@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose')
 const moment = require('moment')
+const jwt = require('jsonwebtoken')
+const Config = require('../../config')
 const Article = mongoose.model('Article')
 moment.locale('zh-cn')
 
@@ -92,39 +94,46 @@ exports.index = async function (ctx) {
   const skip = (index - 1) * size
   const limit = size > 50 ? 50 : size
   const tags = ctx.query.tags
+  let isAdmin = false
   let articles
   let count
 
-  if (!tags) {
-    articles = await Article.find()
-      .populate('tags')
-      .sort({ '_id': -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .catch(err => {
-        ctx.throw(500, '服务器内部错误')
-      })
-    count = await Article.count().catch(err => {
-      ctx.throw(500, '服务器内部错误')
-    })
-  } else {
-    let tagsArr = tags.split(',')
-    articles = await Article.find({
-      tags: { '$in': tagsArr }
-    })
-      .populate('tags')
-      .sort({ '_id': -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .catch(err => {
-        ctx.throw(500, '服务器内部错误')
-      })
-    count = await Article.find({
-      tags: { '$in': tagsArr }
-    }).count().catch(err => {
-      ctx.throw(500, '服务器内部错误')
-    })
+  const authorization = ctx.get('Authorization')
+  if (authorization) {
+    const token = authorization.split('Bearer ')[1]
+    try {
+      await jwt.verify(token, Config.jwt.secret)
+      isAdmin = true
+    } catch (err) {
+      if ('TokenExpiredError' === err.name) {
+        ctx.throw(401, '令牌已过期')
+      }
+      ctx.throw(401, '令牌不合法')
+    }
   }
+
+  let condition = {}
+  if (tags) {
+    let tagsArr = tags.split(',')
+    condition.tags = {'$in': tagsArr}
+  }
+  if (!isAdmin) {
+    condition.is_published = true
+  }
+
+  articles = await Article.find(condition)
+    .populate('tags')
+    .sort({ '_id': -1 })
+    .skip(skip)
+    .limit(parseInt(limit))
+    .catch(err => {
+      ctx.throw(500, '服务器内部错误')
+    })
+  count = await Article.find(condition)
+    .count()
+    .catch(err => {
+      ctx.throw(500, '服务器内部错误')
+    })
 
   articles = articles.map((article) => {
     return {

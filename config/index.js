@@ -14,7 +14,7 @@ module.exports = {
   },
   jwt: {
     secret: process.env.JWT_SECRET,
-    ttl: 60
+    ttl: 1440
   },
   admin: {
   	username: process.env.ADMIN_USERNAME,
