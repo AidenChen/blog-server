@@ -113,6 +113,9 @@ exports.index = async function (ctx) {
   let condition = {}
   if (tags) {
     let tagsArr = tags.split(',')
+    tagsArr = tagsArr.map((tag) => {
+      return mongoose.Types.ObjectId(tag)
+    })
     condition.tags = {'$in': tagsArr}
   }
   if (!isAdmin) {
@@ -124,7 +127,7 @@ exports.index = async function (ctx) {
       {
         $match: condition
       },
-      { 
+      {
         $lookup: {
           from: 'tags',
           localField: 'tags',
