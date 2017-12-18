@@ -95,8 +95,6 @@ exports.index = async function (ctx) {
   const limit = size > 50 ? 50 : size
   const tags = ctx.query.tags
   let isAdmin = false
-  let articles
-  let count
 
   const authorization = ctx.get('Authorization')
   if (authorization) {
@@ -121,32 +119,55 @@ exports.index = async function (ctx) {
     condition.is_published = true
   }
 
-  articles = await Article.find(condition)
-    .populate('tags')
-    .sort({ '_id': -1 })
-    .skip(skip)
-    .limit(parseInt(limit))
+  const articles = await Article
+    .aggregate([
+      {
+        $match: condition
+      },
+      { 
+        $lookup: {
+          from: 'tags',
+          localField: 'tags',
+          foreignField: '_id',
+          as: 'tags'
+        }
+      },
+      {
+        $sort: {
+          '_id': -1
+        }
+      },
+      {
+        $skip: skip
+      },
+      {
+        $limit: parseInt(limit)
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          title: 1,
+          content: 1,
+          abstract: 1,
+          tags: 1,
+          is_published: true,
+          created_at: 1,
+          updated_at: 1
+        }
+      }
+    ])
+    .exec()
     .catch(err => {
       ctx.throw(500, '服务器内部错误')
     })
-  count = await Article.find(condition)
+  const count = await Article
+    .find(condition)
     .count()
+    .exec()
     .catch(err => {
       ctx.throw(500, '服务器内部错误')
     })
-
-  articles = articles.map((article) => {
-    return {
-      id: article.id,
-      title: article.title,
-      content: article.content,
-      abstract: article.abstract,
-      tags: article.tags,
-      is_published: article.is_published,
-      created_at: article.created_at,
-      updated_at: article.updated_at
-    }
-  })
 
   ctx.body = {
     data: {

@@ -68,20 +68,31 @@ exports.update = async function (ctx) {
 }
 
 exports.index = async function (ctx) {
-  let tags = await Tag.find().catch(err => {
-    ctx.throw(500, '服务器内部错误')
-  })
-
-  tags = tags.map((tag) => {
-    return {
-      id: tag.id,
-      name: tag.name
-    }
-  })
+  const tags = await Tag
+    .aggregate(
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          name: 1
+        }
+      }
+    )
+    .exec()
+    .catch(err => {
+      ctx.throw(500, '服务器内部错误')
+    })
+  const count = await Tag
+    .find()
+    .count()
+    .exec()
+    .catch(err => {
+      ctx.throw(500, '服务器内部错误')
+    })
 
   ctx.body = {
     data: {
-      total: 0,
+      total: count,
       items: tags
     }
   }
