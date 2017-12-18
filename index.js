@@ -10,6 +10,8 @@ mongoose.connect(Config.mongodb.url, {
 })
 mongoose.connection.on('error', global.console.error)
 
+const fs = require('fs')
+const https = require('https')
 const Koa = require('koa')
 const convert = require('koa-convert')
 const onerror = require('koa-onerror')
@@ -29,6 +31,14 @@ app
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
-app.listen(Config.app.port, () => {
+// app.listen(Config.app.port, () => {
+//   console.log('Listening: ' + Config.app.port)
+// })
+
+const options = {
+  key: fs.readFileSync('/etc/nginx/cert/214389115560855.key'),
+  cert: fs.readFileSync('/etc/nginx/cert/214389115560855.pem')
+}
+https.createServer(options, () => {
   console.log('Listening: ' + Config.app.port)
-})
+}).listen(Config.app.port)
