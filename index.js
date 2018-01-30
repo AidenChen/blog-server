@@ -33,13 +33,10 @@ app
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
-app.listen(Config.app.port, () => {
-  console.log('Listening: ' + Config.app.port)
-})
 
 const options = {
   key: fs.readFileSync('/etc/nginx/cert/cert.key'),
   cert: fs.readFileSync('/etc/nginx/cert/cert.pem')
 }
 
-https.createServer(options, app.callback()).listen(4433)
+https.createServer(options, app.callback()).listen(Config.app.port)
