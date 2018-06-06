@@ -1,13 +1,21 @@
-'use strict'
+const Kamora = require('kamora')
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const Schema = Kamora.Database.Schema
 
-const TagSchema = new Schema({
+const tagSchema = new Schema({
   name: {
     type: String,
     default: ''
   }
 }, { versionKey: false })
 
-module.exports = mongoose.model('Tag', TagSchema)
+tagSchema.set('toJSON', {
+  getters: true,
+  virtuals: true,
+  transform: (doc, ret, options) => {
+    ret.id = ret._id
+    delete ret._id
+  }
+})
+
+module.exports = Kamora.Database.model('tag', tagSchema)

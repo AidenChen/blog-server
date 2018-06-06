@@ -1,26 +1,42 @@
-'use strict'
-
-const mongoose = require('mongoose')
+const Kamora = require('kamora')
 const moment = require('moment')
-const Schema = mongoose.Schema
-moment.locale('zh-cn')
 
-const UserSchema = new Schema({
+const Schema = Kamora.Database.Schema
+
+const userSchema = new Schema({
   username: String,
   password: String,
   nick: String,
   avatar: String,
-  registered_at: String,
-  logged_in_at: String
+  registered_at: {
+    type: Date,
+    default: Date.now(),
+    get: v => moment(v).format('YYYY-MM-DD HH:mm:ss')
+  },
+  logged_in_at: {
+    type: Date,
+    default: Date.now(),
+    get: v => moment(v).format('YYYY-MM-DD HH:mm:ss')
+  }
 }, { versionKey: false })
 
-UserSchema.pre('save', function (next) {
-  const time = moment().format('YYYY-MM-DD HH:mm:ss')
+userSchema.pre('save', function (next) {
+  const time = Date.now()
   if (this.isNew) {
     this.registered_at = time
+    this.logged_in_at = time
   }
-
   next()
 })
 
-module.exports = mongoose.model('User', UserSchema)
+userSchema.set('toJSON', {
+  getters: true,
+  virtuals: true,
+  transform: (doc, ret, options) => {
+    ret.id = ret._id
+    delete ret._id
+    delete ret.password
+  }
+})
+
+module.exports = Kamora.Database.model('user', userSchema)
