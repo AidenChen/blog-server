@@ -172,7 +172,7 @@ router.push({
       if (tags) {
         let tagsArr = tags.split(',')
         tagsArr = tagsArr.map((tag) => {
-          return mongoose.Types.ObjectId(tag)
+          return Kamora.Database.Types.ObjectId(tag)
         })
         condition.tags = {'$in': tagsArr}
       }
