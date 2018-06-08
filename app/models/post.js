@@ -3,7 +3,7 @@ const moment = require('moment')
 
 const Schema = Kamora.Database.Schema
 
-const articleSchema = new Schema({
+const postSchema = new Schema({
   title: String,
   content: String,
   abstract: String,
@@ -18,16 +18,16 @@ const articleSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now(),
-    get: v => moment(v).format('YYYY-MM-DD HH:mm:ss')
+    get: v => moment(v).format('YYYY/MM/DD')
   },
   updated_at: {
     type: Date,
     default: Date.now(),
-    get: v => moment(v).format('YYYY-MM-DD HH:mm:ss')
+    get: v => moment(v).format('YYYY/MM/DD')
   }
 }, { versionKey: false })
 
-articleSchema.pre('save', function (next) {
+postSchema.pre('save', function (next) {
   const time = Date.now()
   if (this.isNew) {
     this.created_at = time
@@ -36,7 +36,7 @@ articleSchema.pre('save', function (next) {
   next()
 })
 
-articleSchema.set('toJSON', {
+postSchema.set('toJSON', {
   getters: true,
   virtuals: true,
   transform: (doc, ret, options) => {
@@ -45,4 +45,4 @@ articleSchema.set('toJSON', {
   }
 })
 
-module.exports = Kamora.Database.model('article', articleSchema)
+module.exports = Kamora.Database.model('post', postSchema)

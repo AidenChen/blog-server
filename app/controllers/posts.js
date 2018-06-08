@@ -7,7 +7,7 @@ const jwtConfig = require('../../config/jwt')
 
 const router = new Kamora.Router()
 const Validator = Kamora.Validator
-const Article = Kamora.Database.model('article')
+const Post = Kamora.Database.model('post')
 
 router.push({
   method: 'post',
@@ -44,17 +44,17 @@ router.push({
           }
         })
       }
-      const article = new Article(data)
-      let createdArticle = await article
+      const post = new Post(data)
+      let createdPost = await post
         .save()
         .catch(() => {
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
-      await Article.populate(createdArticle, { path: 'tags' }, function (err, result) {
-        createdArticle = result
+      await Post.populate(createdPost, { path: 'tags' }, function (err, result) {
+        createdPost = result
       })
 
-      ctx.body = createdArticle
+      ctx.body = createdPost
 
       await next()
     }
@@ -74,7 +74,7 @@ router.push({
     async (ctx, next) => {
       const id = ctx.filter.params.id
 
-      await Article
+      await Post
         .findByIdAndRemove(id)
         .catch((err) => {
           if ('CastError' === err.name) {
@@ -119,7 +119,7 @@ router.push({
           }
         })
       }
-      await Article
+      await Post
         .findByIdAndUpdate(id, { $set: data })
         .catch((err) => {
           if ('CastError' === err.name) {
@@ -180,7 +180,7 @@ router.push({
         condition.is_published = true
       }
 
-      const articles = await Article
+      const posts = await Post
         .aggregate([
           {
             $match: condition
@@ -224,7 +224,7 @@ router.push({
               is_published: 1,
               created_at: {
                 $dateToString: {
-                  format: '%Y-%m-%d %H:%M:%S',
+                  format: '%Y/%m/%d',
                   date: {
                     $add: ['$created_at', 8 * 60 * 60 * 1000]
                   }
@@ -232,7 +232,7 @@ router.push({
               },
               updated_at: {
                 $dateToString: {
-                  format: '%Y-%m-%d %H:%M:%S',
+                  format: '%Y/%m/%d',
                   date: {
                     $add: ['$updated_at', 8 * 60 * 60 * 1000]
                   }
@@ -245,7 +245,7 @@ router.push({
         .catch(() => {
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
-      const count = await Article
+      const count = await Post
         .find(condition)
         .count()
         .exec()
@@ -254,7 +254,7 @@ router.push({
         })
 
       ctx.body = {
-        items: articles,
+        items: posts,
         total: count
       }
 
@@ -275,7 +275,7 @@ router.push({
     async (ctx, next) => {
       const id = ctx.filter.params.id
 
-      const article = await Article
+      const post = await Post
         .aggregate([
           {
             $match: {
@@ -310,7 +310,7 @@ router.push({
               is_published: 1,
               created_at: {
                 $dateToString: {
-                  format: '%Y-%m-%d %H:%M:%S',
+                  format: '%Y/%m/%d',
                   date: {
                     $add: ['$created_at', 8 * 60 * 60 * 1000]
                   }
@@ -318,7 +318,7 @@ router.push({
               },
               updated_at: {
                 $dateToString: {
-                  format: '%Y-%m-%d %H:%M:%S',
+                  format: '%Y/%m/%d',
                   date: {
                     $add: ['$updated_at', 8 * 60 * 60 * 1000]
                   }
@@ -334,11 +334,11 @@ router.push({
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
-      if (!article) {
+      if (!post) {
         throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
       }
 
-      ctx.body = article
+      ctx.body = post[0]
 
       await next()
     }
