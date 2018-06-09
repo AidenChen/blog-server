@@ -78,7 +78,7 @@ router.push({
         .findByIdAndRemove(id)
         .catch((err) => {
           if ('CastError' === err.name) {
-            throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+            throw new Kamora.Error(error.name.NOT_EXIST)
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
@@ -123,7 +123,7 @@ router.push({
         .findByIdAndUpdate(id, { $set: data })
         .catch((err) => {
           if ('CastError' === err.name) {
-            throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+            throw new Kamora.Error(error.name.NOT_EXIST)
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
@@ -162,9 +162,9 @@ router.push({
           isAdmin = true
         } catch (err) {
           if (err.name === 'TokenExpiredError') {
-            throw new Kamora.Error(error.name.EXPIRED_TOKEN)
+            throw new Kamora.Error(error.name.LOGIN_REQUIRED, '令牌已过期，请重新登录')
           }
-          throw new Kamora.Error(error.name.INVALID_TOKEN)
+          throw new Kamora.Error(error.name.LOGIN_REQUIRED, '令牌不合法，请重新登录')
         }
       }
 
@@ -330,12 +330,12 @@ router.push({
         .exec()
         .catch((err) => {
           if ('CastError' === err.name) {
-            throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+            throw new Kamora.Error(error.name.NOT_EXIST)
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
       if (!post) {
-        throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+        throw new Kamora.Error(error.name.NOT_EXIST)
       }
 
       ctx.body = post[0]

@@ -26,7 +26,7 @@ module.exports = (options) => {
     ctx.filter = ctx.filter || {}
     for (let [key, value] of result) {
       if (value.error) {
-        throw new Kamora.Error(error.name.INVALID_FIELD, value.error.details[0].message)
+        throw new Kamora.Error(error.name.INVALID_FORMAT, value.error.details[0].message)
       } else {
         ctx.filter[key] = value.value
       }

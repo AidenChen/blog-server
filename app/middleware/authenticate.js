@@ -8,7 +8,7 @@ const User = Kamora.Database.model('user')
 module.exports = async (ctx, next) => {
   const authorization = ctx.get('Authorization')
   if (!authorization) {
-    throw new Kamora.Error(error.name.MISSING_TOKEN)
+    throw new Kamora.Error(error.name.LOGIN_REQUIRED, '用户认证失败')
   }
 
   const token = authorization.split('Bearer ')[1]
@@ -25,9 +25,9 @@ module.exports = async (ctx, next) => {
     ctx.filter.user = user
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      throw new Kamora.Error(error.name.EXPIRED_TOKEN)
+      throw new Kamora.Error(error.name.LOGIN_REQUIRED, '令牌已过期，请重新登录')
     }
-    throw new Kamora.Error(error.name.INVALID_TOKEN)
+    throw new Kamora.Error(error.name.LOGIN_REQUIRED, '令牌不合法，请重新登录')
   }
 
   await next()

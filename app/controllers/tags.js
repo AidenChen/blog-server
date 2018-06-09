@@ -26,7 +26,7 @@ router.push({
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
       if (existingTag) {
-        throw new Kamora.Error(error.name.ALREADY_EXISTS, '', 400)
+        throw new Kamora.Error(error.name.ALREADY_EXISTS)
       }
 
       const tag = new Tag({
@@ -62,7 +62,7 @@ router.push({
         .findByIdAndRemove(id)
         .catch((err) => {
           if ('CastError' === err.name) {
-            throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+            throw new Kamora.Error(error.name.NOT_EXIST)
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
@@ -94,7 +94,7 @@ router.push({
         .findByIdAndUpdate(id, { $set: ctx.filter.body })
         .catch((err) => {
           if ('CastError' === err.name) {
-            throw new Kamora.Error(error.name.NOT_EXIST, '', 400)
+            throw new Kamora.Error(error.name.NOT_EXIST)
           }
           throw new Kamora.Error(error.name.INTERNAL_SERVER_ERROR)
         })
