@@ -91,7 +91,7 @@ router.push({
 })
 
 router.push({
-  method: 'put',
+  method: 'patch',
   path: '/:id',
   processors: [
     authenticate,
@@ -100,9 +100,9 @@ router.push({
         id: Validator.string().required()
       },
       body: {
-        title: Validator.string().required(),
-        content: Validator.string().required(),
-        abstract: Validator.string().required(),
+        title: Validator.any(),
+        content: Validator.any(),
+        abstract: Validator.any(),
         is_published: Validator.any(),
         tags: Validator.any()
       }
@@ -111,7 +111,7 @@ router.push({
       const id = ctx.filter.params.id
 
       let data = Object.assign(ctx.filter.body, { updated_at: Date.now() })
-      if (ctx.filter.body.tags.length) {
+      if (ctx.filter.body.tags && ctx.filter.body.tags.length) {
         data.tags = ctx.filter.body.tags.map((tag) => {
           return {
             _id: tag.id,
