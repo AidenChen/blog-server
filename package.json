@@ -24,7 +24,7 @@
     "jsonwebtoken": "^8.1.1",
     "kamora": "^0.6.0",
     "lodash": "^4.17.4",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "qiniu": "^7.3.0"
   },
   "devDependencies": {
