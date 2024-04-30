@@ -209,7 +209,7 @@ router.push({
               _id: 0,
               id: '$_id',
               title: 1,
-              content: 1,
+              content: isAdmin ? 1 : 0,
               abstract: 1,
               tags: {
                 $map: {
