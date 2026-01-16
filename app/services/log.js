@@ -1,3 +1,11 @@
+// 添加 util 模块补丁，修复 log4js 报错 'util.isError is not a function'
+const util = require('util')
+if (!util.isError) {
+  util.isError = function (e) {
+    return e instanceof Error
+  }
+}
+
 const Kamora = require('kamora')
 const logConfig = require('../../config/log')
 
