@@ -23,7 +23,7 @@
     "dotenv": "^4.0.0",
     "jsonwebtoken": "^8.1.1",
     "kamora": "^0.6.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "moment": "^2.20.1",
     "qiniu": "^7.3.0"
   },
